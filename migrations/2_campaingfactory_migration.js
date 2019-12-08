@@ -1,0 +1,5 @@
+const factory = artifacts.require("CampaignFactory");
+
+module.exports = function(deployer) {
+    deployer.deploy(factory);
+};
