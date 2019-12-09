@@ -1,13 +1,13 @@
 {
-  "name": "kickstart",
+  "name": "kickstarter",
   "version": "1.0.0",
   "description": "",
-  "main": "truffle-config.js",
+  "main": "",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "truffle test"
   },
   "author": "",
   "license": "ISC",

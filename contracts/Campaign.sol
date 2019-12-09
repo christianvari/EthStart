@@ -59,7 +59,7 @@ contract Campaign {
         requests.push(newRequest);
     }
 
-    function approuveRequest(uint id) public {
+    function approveRequest(uint id) public {
         require(approvers[msg.sender]);
 
         Request storage req = requests[id];
@@ -74,8 +74,8 @@ contract Campaign {
 
         Request storage req = requests[id];
 
-        require(! req.complete);
-        require(req.approvalCount > (approversCount/2));
+        require(! req.complete, "Request altredy completed");
+        require(req.approvalCount > (approversCount / 2), "Not enough approvers");
 
         req.recipient.transfer(req.value);
         req.complete = true;
