@@ -1,8 +1,12 @@
 import React, { Component } from "react";
-import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 
 class CampaignShow extends Component {
+    static async getInitialProps(props) {
+        let address = props.query.address;
+        return { address };
+    }
+
     render() {
         return (
             <Layout>
@@ -12,12 +16,4 @@ class CampaignShow extends Component {
     }
 }
 
-export default () => {
-    const router = useRouter();
-    const address = router.query.address;
-    return (
-        <div>
-            <CampaignShow address={address} />
-        </div>
-    );
-};
+export default CampaignShow;
