@@ -1,9 +1,14 @@
 import React, { Component } from "react";
 import { useRouter } from "next/router";
+import Layout from "../../components/Layout";
 
 class CampaignShow extends Component {
     render() {
-        return <h3>Campaign show {this.props.address}</h3>;
+        return (
+            <Layout>
+                <h3>Campaign show {this.props.address}</h3>
+            </Layout>
+        );
     }
 }
 
