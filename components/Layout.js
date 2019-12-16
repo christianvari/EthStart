@@ -7,7 +7,6 @@ export default props => {
         <Container>
             <Header />
             {props.children}
-            <h1>I am a footer</h1>
         </Container>
     );
 };
