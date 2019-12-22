@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Layout from "../../components/Layout";
 import Campaign from "../../ethereum/campaign";
+import { Card } from "semantic-ui-react";
+import web3 from "../../ethereum/web3";
 
 class CampaignShow extends Component {
     static async getInitialProps(props) {
@@ -18,10 +20,59 @@ class CampaignShow extends Component {
         };
     }
 
+    renderCards() {
+        const {
+            minimumContribution,
+            balance,
+            requestsCount,
+            approversCount,
+            manager
+        } = this.props;
+
+        const items = [
+            {
+                header: manager,
+                meta: "Address of manager",
+                description:
+                    "The manager created this campaign and can create requests to withdraw money",
+                style: { overflowWrap: "break-word" }
+            },
+            {
+                header: minimumContribution,
+                meta: "Minimum Contribution (wei)",
+                description:
+                    "You must contribute at least this much wei to become an approuver",
+                style: { overflowWrap: "break-word" }
+            },
+            {
+                header: requestsCount,
+                meta: "Number of requests",
+                description:
+                    "A request tries to withdraw money from the contract. Request must be approved by approvers",
+                style: { overflowWrap: "break-word" }
+            },
+            {
+                header: approversCount,
+                meta: "Number of approvers",
+                description:
+                    "Number of people who have altredy donated to this campaign"
+            },
+            {
+                header: web3.utils.fromWei(balance, "ether"),
+                meta: "Campaign balance",
+                description:
+                    "The balance is how much money this campaign has left to spend"
+            }
+        ];
+
+        return <Card.Group items={items} />;
+    }
+
     render() {
         return (
             <Layout>
-                <h3>Campaign show</h3>
+                <h3>Campaign details</h3>
+                {this.renderCards()}
             </Layout>
         );
     }
