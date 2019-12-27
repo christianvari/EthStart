@@ -1,0 +1,58 @@
+import React, { Component } from "react";
+import Campaign from "../../../../ethereum/campaign";
+import { Form, Input, Button } from "semantic-ui-react";
+import Layout from "../../../../components/Layout";
+
+class RequestNew extends Component {
+    state = { value: "", description: "", recipient: "" };
+
+    static async getInitialProps(props) {
+        const address = props.query.address;
+        return { address };
+    }
+
+    render() {
+        return (
+            <Layout>
+                <h3>Create a Request</h3>
+                <Form>
+                    <Form.Field>
+                        <label>Description</label>
+                        <Input
+                            value={this.state.description}
+                            onChange={event => {
+                                this.setState({
+                                    description: event.target.value
+                                });
+                            }}
+                        />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Value</label>
+                        <Input
+                            value={this.state.value}
+                            onChange={event => {
+                                this.setState({ value: event.target.value });
+                            }}
+                        />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Recipient</label>
+                        <Input
+                            value={this.state.recipient}
+                            onChange={event => {
+                                this.setState({
+                                    recipient: event.target.value
+                                });
+                            }}
+                        />
+                    </Form.Field>
+
+                    <Button primary>Create!</Button>
+                </Form>
+            </Layout>
+        );
+    }
+}
+
+export default RequestNew;
