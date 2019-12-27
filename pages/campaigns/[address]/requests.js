@@ -19,7 +19,7 @@ class RequestIndex extends Component {
                     return campaign.methods.requests(index).call();
                 })
         );
-        return { address, requests, approversCount };
+        return { address, requests, approversCount, requestsCount };
     }
 
     renderRows() {
@@ -44,7 +44,13 @@ class RequestIndex extends Component {
                 <h3>Requests</h3>
                 <Link href={`/campaigns/${this.props.address}/requests/new`}>
                     <a>
-                        <Button primary>Add Request</Button>
+                        <Button
+                            floated={"right"}
+                            style={{ marginBottom: 10 }}
+                            primary
+                        >
+                            Add Request
+                        </Button>
                     </a>
                 </Link>
 
@@ -62,6 +68,7 @@ class RequestIndex extends Component {
                     </Header>
                     <Body>{this.renderRows()}</Body>
                 </Table>
+                <div>Found {this.props.requestsCount} requests</div>
             </Layout>
         );
     }
