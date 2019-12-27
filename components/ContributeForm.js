@@ -5,11 +5,13 @@ import web3 from "../ethereum/web3";
 import Router from "next/router";
 
 class ContributeForm extends Component {
-    state = { value: "" };
+    state = { value: "", errorMessage: "", loading: false };
 
     onSubmit = async event => {
         event.preventDefault();
         const campaign = Campaign(this.props.address);
+
+        this.setState({ loading: true, errorMessage: "" });
 
         try {
             const accounts = await web3.eth.getAccounts();
@@ -19,13 +21,15 @@ class ContributeForm extends Component {
             });
             Router.replace(`/campaigns/${this.props.address}`);
         } catch (error) {
-            console.log(error);
+            this.setState({ errorMessage: error.message });
         }
+
+        this.setState({ loading: false, value: "" });
     };
 
     render() {
         return (
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
                 <Form.Field>
                     <label>Amount to contribute</label>
                     <Input
@@ -37,7 +41,14 @@ class ContributeForm extends Component {
                         labelPosition="right"
                     />
                 </Form.Field>
-                <Button primary>Contribute!</Button>
+                <Message
+                    error
+                    header="Oops"
+                    content={this.state.errorMessage}
+                />
+                <Button primary loading={this.state.loading}>
+                    Contribute!
+                </Button>
             </Form>
         );
     }
