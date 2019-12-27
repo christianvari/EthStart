@@ -3,6 +3,7 @@ import Layout from "../../../components/Layout";
 import Link from "next/link";
 import { Button, Table } from "semantic-ui-react";
 import Campaing from "../../../ethereum/campaign";
+import RequestRow from "../../../components/RequestRow";
 
 class RequestIndex extends Component {
     static async getInitialProps(props) {
@@ -10,6 +11,7 @@ class RequestIndex extends Component {
 
         const campaign = Campaing(address);
         const requestsCount = await campaign.methods.getRequestsCount().call();
+        const approversCount = await campaign.methods.approversCount().call();
         const requests = await Promise.all(
             Array(parseInt(requestsCount))
                 .fill()
@@ -17,9 +19,23 @@ class RequestIndex extends Component {
                     return campaign.methods.requests(index).call();
                 })
         );
-
-        return { address, requests };
+        return { address, requests, approversCount };
     }
+
+    renderRows() {
+        return this.props.requests.map((request, index) => {
+            return (
+                <RequestRow
+                    key={index}
+                    id={index}
+                    request={request}
+                    address={this.props.address}
+                    approversCount={this.props.approversCount}
+                />
+            );
+        });
+    }
+
     render() {
         const { Header, Row, HeaderCell, Body } = Table;
 
@@ -44,6 +60,7 @@ class RequestIndex extends Component {
                             <HeaderCell>Finalize</HeaderCell>
                         </Row>
                     </Header>
+                    <Body>{this.renderRows()}</Body>
                 </Table>
             </Layout>
         );
