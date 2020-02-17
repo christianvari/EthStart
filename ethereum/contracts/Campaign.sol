@@ -87,13 +87,15 @@ contract Campaign {
 
     }
 
-    function getSummary() public view returns(uint, uint, uint, uint, address){
+    function getSummary() public view returns(uint, uint, uint, uint, address, string memory, string memory){
         return(
             minimumContribution,
             address(this).balance,
             requests.length,
             approversCount,
-            manager
+            manager,
+            title,
+            description
         );
     }
 
