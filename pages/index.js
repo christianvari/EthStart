@@ -11,17 +11,19 @@ class CampaignIndex extends Component {
         const campaignsAddresses = await factory.methods
             .getDeployedCampaigns()
             .call();
-        const campaigns = campaignsAddresses.map(async address => {
-            const campaign = Campaign(address);
-            const title = campaign.methods.title().call();
-            return { address, title };
-        });
 
+        const campaigns = await Promise.all(
+            campaignsAddresses.map(async address => {
+                const campaign = Campaign(address);
+                const title = await campaign.methods.title().call();
+                return { address, title };
+            })
+        );
         return { campaigns };
     }
 
     renderCampaigns() {
-        const items = this.props.campaigns.map((address, title) => {
+        const items = this.props.campaigns.map(({ address, title }) => {
             return {
                 header: title,
                 description: (
