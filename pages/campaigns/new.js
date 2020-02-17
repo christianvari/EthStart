@@ -17,6 +17,7 @@ class CampaignNew extends Component {
 
         this.setState({ loading: true, errorMessage: "" });
         try {
+            await web3.currentProvider.enable();
             const accounts = await web3.eth.getAccounts();
             await factory.methods
                 .createCampaign(this.state.minimumContribution)
