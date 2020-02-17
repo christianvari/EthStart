@@ -70,21 +70,32 @@ class CampaignShow extends Component {
             }
         ];
 
-        return <Card.Group items={items} />;
+        return <Card.Group stackable items={items} />;
     }
 
     render() {
         return (
             <Layout>
-                <h3>Campaign details</h3>
-                <Grid>
+                <Grid stackable>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Header as="h1" textAlign="center">
+                                {this.props.title}
+                            </Header>
+                        </Grid.Column>
+                    </Grid.Row>
                     <Grid.Row>
                         <Grid.Column width={10}>
-                            {this.renderCards()}
+                            <Container text fluid textAlign="justified">
+                                <p>{this.props.description}</p>
+                            </Container>
                         </Grid.Column>
                         <Grid.Column width={6}>
                             <ContributeForm address={this.props.address} />
                         </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>{this.renderCards()}</Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column>
@@ -98,10 +109,6 @@ class CampaignShow extends Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <Container text>
-                    <Header as="h1">{this.props.title}</Header>
-                    <p>{this.props.description}</p>
-                </Container>
             </Layout>
         );
     }
