@@ -10,6 +10,7 @@ class RequestRow extends Component {
     onApprove = async () => {
         this.setState({ loadingApprove: true });
         const campaign = Campaign(this.props.address);
+        await web3.currentProvider.enable();
         const accounts = await web3.eth.getAccounts();
         await campaign.methods
             .approveRequest(this.props.id)
@@ -21,6 +22,7 @@ class RequestRow extends Component {
     onFinalize = async () => {
         this.setState({ loadingFinalize: true });
         const campaign = Campaign(this.props.address);
+        await web3.currentProvider.enable();
         const accounts = await web3.eth.getAccounts();
         await campaign.methods
             .finalizeRequest(this.props.id)
