@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Form, Input, Message, Button } from "semantic-ui-react";
 import Campaign from "../ethereum/campaign";
 import web3 from "../ethereum/web3";
+import isMetamaskInstalled from "../ethereum/metamaskCheck";
 import Router from "next/router";
 
 class ContributeForm extends Component {
@@ -9,6 +10,8 @@ class ContributeForm extends Component {
 
     onSubmit = async event => {
         event.preventDefault();
+        if (!isMetamaskInstalled()) return;
+
         const campaign = Campaign(this.props.address);
 
         this.setState({ loading: true, errorMessage: "" });

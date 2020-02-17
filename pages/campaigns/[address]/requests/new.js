@@ -3,6 +3,7 @@ import Campaign from "../../../../ethereum/campaign";
 import { Form, Input, Button, Message } from "semantic-ui-react";
 import Layout from "../../../../components/Layout";
 import web3 from "../../../../ethereum/web3";
+import isMetamaskInstalled from "../../../../ethereum/metamaskCheck";
 import Router from "next/router";
 import Link from "next/link";
 
@@ -22,6 +23,7 @@ class RequestNew extends Component {
 
     onSubmit = async event => {
         event.preventDefault();
+        if (!isMetamaskInstalled()) return;
 
         const campaign = Campaign(this.props.address);
         const { description, value, recipient } = this.state;
@@ -30,7 +32,6 @@ class RequestNew extends Component {
         try {
             await web3.currentProvider.enable();
             const accounts = await web3.eth.getAccounts();
-
             await campaign.methods
                 .createRequest(
                     description,
