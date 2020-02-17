@@ -33,7 +33,7 @@ contract Campaign {
     uint public approversCount;
 
     modifier restricted(){
-        require(msg.sender == manager);
+        require(msg.sender == manager, "You aren't the manger of this Campaign");
         _;
     }
 
@@ -45,7 +45,8 @@ contract Campaign {
     }
 
     function contribute() public payable {
-        require(msg.value > minimumContribution);
+        require(msg.value > minimumContribution, "The minimum contribution is not satisfied");
+        require(!approvers[msg.sender], "You can contribute only one time");
 
         approvers[msg.sender] = true;
         approversCount++;
@@ -64,11 +65,11 @@ contract Campaign {
     }
 
     function approveRequest(uint id) public {
-        require(approvers[msg.sender]);
+        require(approvers[msg.sender], "You have to contribute");
 
         Request storage req = requests[id];
 
-        require(! req.approvals[msg.sender]);
+        require(! req.approvals[msg.sender], "You can approve only one time");
 
         req.approvals[msg.sender] = true;
         req.approvalCount++;
