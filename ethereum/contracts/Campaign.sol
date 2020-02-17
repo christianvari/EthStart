@@ -3,8 +3,8 @@ pragma solidity ^0.5.0;
 contract CampaignFactory {
     address[] public deployedCampaigns;
 
-    function createCampaign(uint minimum) public {
-        address newCampaign = address(new Campaign(minimum, msg.sender));
+    function createCampaign(uint minimum, string memory title, string memory description) public {
+        address newCampaign = address(new Campaign(minimum, msg.sender, title, description));
         deployedCampaigns.push(newCampaign);
     }
 
@@ -27,29 +27,34 @@ contract Campaign {
     Request[] public requests;
     address public manager;
     uint public minimumContribution;
+    string public title;
+    string public description;
     mapping(address => bool) public approvers;
     uint public approversCount;
 
     modifier restricted(){
-        require(msg.sender == manager);
+        require(msg.sender == manager, "You aren't the manger of this Campaign");
         _;
     }
 
-    constructor(uint minimum, address creator) public {
+    constructor(uint minimum, address creator, string memory t, string memory d) public {
         manager = creator;
         minimumContribution = minimum;
+        title = t;
+        description = d;
     }
 
     function contribute() public payable {
-        require(msg.value > minimumContribution);
+        require(msg.value > minimumContribution, "The minimum contribution is not satisfied");
+        require(!approvers[msg.sender], "You can contribute only one time");
 
         approvers[msg.sender] = true;
         approversCount++;
     }
 
-    function createRequest(string memory description, uint value, address payable recipient) public restricted{
+    function createRequest(string memory desc, uint value, address payable recipient) public restricted{
         Request memory newRequest = Request({
-            description:description,
+            description:desc,
             value:value,
             recipient:recipient,
             complete:false,
@@ -60,11 +65,11 @@ contract Campaign {
     }
 
     function approveRequest(uint id) public {
-        require(approvers[msg.sender]);
+        require(approvers[msg.sender], "You have to contribute");
 
         Request storage req = requests[id];
 
-        require(! req.approvals[msg.sender]);
+        require(! req.approvals[msg.sender], "You can approve only one time");
 
         req.approvals[msg.sender] = true;
         req.approvalCount++;
@@ -82,13 +87,15 @@ contract Campaign {
 
     }
 
-    function getSummary() public view returns(uint, uint, uint, uint, address){
+    function getSummary() public view returns(uint, uint, uint, uint, address, string memory, string memory){
         return(
             minimumContribution,
             address(this).balance,
             requests.length,
             approversCount,
-            manager
+            manager,
+            title,
+            description
         );
     }
 

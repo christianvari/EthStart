@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Layout from "../../components/Layout";
 import Campaign from "../../ethereum/campaign";
-import { Card, Grid, Button } from "semantic-ui-react";
+import { Card, Grid, Button, Container, Header } from "semantic-ui-react";
 import web3 from "../../ethereum/web3";
 import ContributeForm from "../../components/ContributeForm";
 import Link from "next/link";
@@ -12,14 +12,16 @@ class CampaignShow extends Component {
         const campaign = Campaign(address);
 
         const summary = await campaign.methods.getSummary().call();
-
+        console.log(summary);
         return {
             address: address,
             minimumContribution: summary[0],
             balance: summary[1],
             requestsCount: summary[2],
             approversCount: summary[3],
-            manager: summary[4]
+            manager: summary[4],
+            title: summary[5],
+            description: summary[6]
         };
     }
 
@@ -68,21 +70,32 @@ class CampaignShow extends Component {
             }
         ];
 
-        return <Card.Group items={items} />;
+        return <Card.Group stackable items={items} />;
     }
 
     render() {
         return (
             <Layout>
-                <h3>Campaign details</h3>
-                <Grid>
+                <Grid stackable>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Header as="h1" textAlign="center">
+                                {this.props.title}
+                            </Header>
+                        </Grid.Column>
+                    </Grid.Row>
                     <Grid.Row>
                         <Grid.Column width={10}>
-                            {this.renderCards()}
+                            <Container text fluid textAlign="justified">
+                                <p>{this.props.description}</p>
+                            </Container>
                         </Grid.Column>
                         <Grid.Column width={6}>
                             <ContributeForm address={this.props.address} />
                         </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column>{this.renderCards()}</Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column>
