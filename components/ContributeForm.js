@@ -6,11 +6,21 @@ import isMetamaskInstalled from "../ethereum/metamaskCheck";
 import Router from "next/router";
 
 class ContributeForm extends Component {
-    state = { value: "", errorMessage: "", loading: false };
+    state = {
+        value: "",
+        errorMessage: "",
+        loading: false,
+        isMetamaskInstalled: false
+    };
+
+    async componentDidMount() {
+        if (isMetamaskInstalled()) {
+            this.setState({ isMetamaskInstalled: true });
+        }
+    }
 
     onSubmit = async event => {
         event.preventDefault();
-        if (!isMetamaskInstalled()) return;
 
         const campaign = Campaign(this.props.address);
 
@@ -50,7 +60,11 @@ class ContributeForm extends Component {
                     header="Oops"
                     content={this.state.errorMessage}
                 />
-                <Button primary loading={this.state.loading}>
+                <Button
+                    primary
+                    disabled={!this.state.isMetamaskInstalled}
+                    loading={this.state.loading}
+                >
                     Contribute!
                 </Button>
             </Form>
