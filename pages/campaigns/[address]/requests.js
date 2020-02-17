@@ -1,15 +1,20 @@
 import React, { Component } from "react";
 import Layout from "../../../components/Layout";
 import Link from "next/link";
-import { Button, Table } from "semantic-ui-react";
+import { Button, Table, Popup } from "semantic-ui-react";
 import Campaing from "../../../ethereum/campaign";
 import RequestRow from "../../../components/RequestRow";
+import web3 from "../../../ethereum/web3";
+import isMetamaskInstalled from "../../../ethereum/metamaskCheck";
 
 class RequestIndex extends Component {
+    state = { isOwner: false };
+
     static async getInitialProps(props) {
         const address = props.query.address;
 
         const campaign = Campaing(address);
+        const campaignOwner = await campaign.methods.manager().call();
         const requestsCount = await campaign.methods.getRequestsCount().call();
         const approversCount = await campaign.methods.approversCount().call();
         const requests = await Promise.all(
@@ -19,7 +24,23 @@ class RequestIndex extends Component {
                     return campaign.methods.requests(index).call();
                 })
         );
-        return { address, requests, approversCount, requestsCount };
+        return {
+            address,
+            requests,
+            approversCount,
+            requestsCount,
+            campaignOwner
+        };
+    }
+
+    async componentDidMount() {
+        if (!isMetamaskInstalled()) return;
+
+        await web3.currentProvider.enable();
+        const account = await web3.eth.getAccounts();
+        if (account[0] == this.props.campaignOwner) {
+            this.setState({ isOwner: true });
+        }
     }
 
     renderRows() {
@@ -47,6 +68,7 @@ class RequestIndex extends Component {
                         <Button
                             floated={"right"}
                             style={{ marginBottom: 10 }}
+                            disabled={!this.state.isOwner}
                             primary
                         >
                             Add Request
