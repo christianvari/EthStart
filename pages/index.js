@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import factory from "../ethereum/factory";
+import Campaign from "../ethereum/campaign";
 import Layout from "../components/Layout";
 import { Card, Button, Grid } from "semantic-ui-react";
 import Link from "next/link";
@@ -7,15 +8,22 @@ import Link from "next/link";
 class CampaignIndex extends Component {
     static async getInitialProps() {
         // This is a NEXT.js method used to fetching information during server rendering
-        const campaigns = await factory.methods.getDeployedCampaigns().call();
+        const campaignsAddresses = await factory.methods
+            .getDeployedCampaigns()
+            .call();
+        const campaigns = campaignsAddresses.map(async address => {
+            const campaign = Campaign(address);
+            const title = campaign.methods.title().call();
+            return { address, title };
+        });
 
         return { campaigns };
     }
 
     renderCampaigns() {
-        const items = this.props.campaigns.map(address => {
+        const items = this.props.campaigns.map((address, title) => {
             return {
-                header: address,
+                header: title,
                 description: (
                     <Link href={`/campaigns/${address}`}>
                         <a>View Campaign</a>
