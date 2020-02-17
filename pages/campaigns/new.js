@@ -4,6 +4,7 @@ import { Form, Button, Input, Message } from "semantic-ui-react";
 import Router from "next/router";
 import factory from "../../ethereum/factory";
 import web3 from "../../ethereum/web3";
+import isMetamaskInstalled from "../../../../ethereum/metamaskCheck";
 
 class CampaignNew extends Component {
     state = {
@@ -14,9 +15,11 @@ class CampaignNew extends Component {
 
     onSubmit = async event => {
         event.preventDefault();
+        if (!isMetamaskInstalled()) return;
 
         this.setState({ loading: true, errorMessage: "" });
         try {
+            await web3.currentProvider.enable();
             const accounts = await web3.eth.getAccounts();
             await factory.methods
                 .createCampaign(this.state.minimumContribution)
