@@ -1,0 +1,6 @@
+[submodule "EthStart-client"]
+	path = EthStart-client
+	url = git@github.com:christianvari/EthStart-client.git
+[submodule "EthStart-contracts"]
+	path = EthStart-contracts
+	url = git@github.com:christianvari/EthStart-contracts.git
